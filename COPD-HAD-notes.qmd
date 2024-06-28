@@ -1,0 +1,31 @@
+---
+title: "model-notes"
+format: html
+editor: source
+---
+
+## What are the patient characteristics that predict worsening depression/anxiety in COPD patients? 
+
+-   Dataset of 101 [Chronic obstructive pulmonary disease](https://www.nhs.uk/conditions/chronic-obstructive-pulmonary-disease-copd/) COPD patients. 
+
+-   The HAD variable is the score from the Hospital Anxiety and Depression scale.
+
+-   HADS score ranges from 0 to 21
+
+
+## Choosing predictor variables
+
+-   Characteristics: Age, Gender, PackHistory, Smoking.
+
+-   Disease: CAT, COPDSEVERITY.
+
+-   Lung function: FEV1, FEV1PRED, FVCPRED, FVCPRED1.
+
+-   Co-morbidities: 
+
+## Import Dataset
+
+```{r}
+COPD <- read.csv("data/COPD_student_dataset.csv")
+```
+
