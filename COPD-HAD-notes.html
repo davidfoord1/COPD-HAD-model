@@ -163,6 +163,198 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>COPD[[<span class="st">"CAT"</span>]][COPD[[<span class="st">"CAT"</span>]] <span class="sc">&gt;</span> <span class="dv">40</span>] <span class="ot">&lt;-</span> <span class="cn">NA_integer_</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
+<section id="collinearity-of-predictor-candidates" class="level2">
+<h2 class="anchored" data-anchor-id="collinearity-of-predictor-candidates">Collinearity of predictor candidates</h2>
+<section id="correlation-in-continuous-variables" class="level3">
+<h3 class="anchored" data-anchor-id="correlation-in-continuous-variables">Correlation in continuous variables</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>continuous_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"PackHistory"</span>, <span class="st">"CAT"</span>, <span class="st">"FEV1"</span>, </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"FEV1PRED"</span>, <span class="st">"FVC"</span>, <span class="st">"FVCPRED"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Pairwise scatterplots</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Correlation Matrix</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pairs</span>(COPD[, continuous_vars])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="COPD-HAD-notes_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(COPD[, continuous_vars])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             PackHistory CAT       FEV1   FEV1PRED         FVC      FVCPRED
+PackHistory  1.000000000  NA -0.1315051 -0.1313410 -0.09307289 -0.004489788
+CAT                   NA   1         NA         NA          NA           NA
+FEV1        -0.131505136  NA  1.0000000  0.7761105  0.82016501  0.515856013
+FEV1PRED    -0.131340964  NA  0.7761105  1.0000000  0.52152997  0.625877533
+FVC         -0.093072888  NA  0.8201650  0.5215300  1.00000000  0.622430376
+FVCPRED     -0.004489788  NA  0.5158560  0.6258775  0.62243038  1.000000000</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>There is strong correlation between the lung function measures FEV1, FEV1PRED, FVC and FVCPRED, so I will seek to include only one of the four, by exploring the individual relationships of each to HAD:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">FEV1</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">FEV1PRED</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">FVC</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false" href="">FVCPRED</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>FEV1_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(HAD <span class="sc">~</span> FEV1, COPD)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(FEV1_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = HAD ~ FEV1, data = COPD)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-11.869  -4.710  -1.278   3.932  18.128 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   14.622      1.858   7.871 4.78e-12 ***
+FEV1          -2.435      1.072  -2.272   0.0253 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 7.188 on 98 degrees of freedom
+  (1 observation deleted due to missingness)
+Multiple R-squared:  0.05004,   Adjusted R-squared:  0.04035 
+F-statistic: 5.162 on 1 and 98 DF,  p-value: 0.02527</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(HAD <span class="sc">~</span> FEV1, COPD)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(FEV1_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="COPD-HAD-notes_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>FEV1PRED_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(HAD <span class="sc">~</span> FEV1PRED, COPD)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(FEV1PRED_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = HAD ~ FEV1PRED, data = COPD)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-11.819  -4.662  -1.654   4.731  19.298 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 15.06450    2.02895   7.425 4.19e-11 ***
+FEV1PRED    -0.07448    0.03260  -2.284   0.0245 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 7.186 on 98 degrees of freedom
+  (1 observation deleted due to missingness)
+Multiple R-squared:  0.05056,   Adjusted R-squared:  0.04087 
+F-statistic: 5.218 on 1 and 98 DF,  p-value: 0.02451</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(HAD <span class="sc">~</span> FEV1PRED, COPD)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(FEV1PRED_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="COPD-HAD-notes_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>FVC_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(HAD <span class="sc">~</span> FVC, COPD)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(FVC_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = HAD ~ FVC, data = COPD)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-11.161  -5.108  -1.560   4.502  18.147 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  14.4460     2.3162   6.237 1.13e-08 ***
+FVC          -1.2586     0.7448  -1.690   0.0943 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 7.269 on 98 degrees of freedom
+  (1 observation deleted due to missingness)
+Multiple R-squared:  0.02831,   Adjusted R-squared:  0.01839 
+F-statistic: 2.855 on 1 and 98 DF,  p-value: 0.09426</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(HAD <span class="sc">~</span> FVC, COPD)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(FVC_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="COPD-HAD-notes_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>FVCPRED_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(HAD <span class="sc">~</span> FVCPRED, COPD)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(FVCPRED_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = HAD ~ FVCPRED, data = COPD)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-12.010  -5.014  -1.193   4.286  19.529 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  18.5253     2.9301   6.322 7.66e-09 ***
+FVCPRED      -0.0905     0.0330  -2.742  0.00725 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 7.107 on 98 degrees of freedom
+  (1 observation deleted due to missingness)
+Multiple R-squared:  0.07127,   Adjusted R-squared:  0.06179 
+F-statistic:  7.52 on 1 and 98 DF,  p-value: 0.007254</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(HAD <span class="sc">~</span> FVCPRED, COPD)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(FVCPRED_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="COPD-HAD-notes_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>They all have seem to be a slight negative predictor of HAD, but none of them explain the variation very well. The FVCPRED model has the highest adjusted R squared value at 0.06179.</p>
+</section>
+</section>
 
 </main>
 <!-- /main column -->

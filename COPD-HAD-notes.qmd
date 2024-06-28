@@ -64,3 +64,64 @@ Since there is just the one, I will exclude it.
 COPD[["CAT"]][COPD[["CAT"]] > 40] <- NA_integer_
 ```
 
+
+## Collinearity of predictor candidates
+
+### Correlation in continuous variables
+
+```{r collinear}
+continuous_vars <- c("PackHistory", "CAT", "FEV1", 
+                     "FEV1PRED", "FVC", "FVCPRED")
+```
+::: {.panel-tabset}
+## Pairwise scatterplots
+```{r}
+pairs(COPD[, continuous_vars])
+```
+## Correlation Matrix
+
+```{r}
+cor(COPD[, continuous_vars])
+```
+:::
+
+There is strong correlation between the lung function measures FEV1, FEV1PRED, FVC and FVCPRED, so I will seek to include only one of the four, by exploring the individual relationships of each to HAD:
+
+::: {.panel-tabset}
+## FEV1
+
+```{r}
+FEV1_model <- lm(HAD ~ FEV1, COPD)
+summary(FEV1_model)
+plot(HAD ~ FEV1, COPD)
+abline(FEV1_model)
+```
+## FEV1PRED
+
+```{r}
+FEV1PRED_model <- lm(HAD ~ FEV1PRED, COPD)
+summary(FEV1PRED_model)
+plot(HAD ~ FEV1PRED, COPD)
+abline(FEV1PRED_model)
+```
+
+## FVC
+
+```{r}
+FVC_model <- lm(HAD ~ FVC, COPD)
+summary(FVC_model)
+plot(HAD ~ FVC, COPD)
+abline(FVC_model)
+```
+
+## FVCPRED
+
+```{r}
+FVCPRED_model <- lm(HAD ~ FVCPRED, COPD)
+summary(FVCPRED_model)
+plot(HAD ~ FVCPRED, COPD)
+abline(FVCPRED_model)
+```
+:::
+
+They all have seem to be a slight negative predictor of HAD, but none of them explain the variation very well. The FVCPRED model has the highest adjusted R squared value at 0.06179.
