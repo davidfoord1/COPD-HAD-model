@@ -29,3 +29,38 @@ editor: source
 COPD <- read.csv("data/COPD_student_dataset.csv")
 ```
 
+
+## Missing or inaccurate values
+
+Inspecting variables with `summary()` reveals some unlikely looking ranges.
+
+```{r}
+summary(COPD[["HAD"]])
+```
+
+The HAD score should range from 0 to 21, so there's a least 1 incorrect value.
+
+```{r}
+sum(COPD[["HAD"]] > 21)
+table(COPD[["HAD"]][COPD[["HAD"]] > 21])
+```
+
+In fact there are 11 values over 21. It looks as though the scale for this actually runs from 0 to 30. I'd like to take these questions back to the research team to confirm, but for the sake of this exercise I will just ignore 56.2 as the outlier.
+
+```{r}
+COPD[["HAD"]][COPD[["HAD"]] > 30] <- NA_integer_
+```
+
+Similarly, CAT has a clearly separated max value. CAT is the COPD assessment test and according to the [CAT user guide](https://www.catestonline.org/content/dam/global/catestonline/documents/CAT_HCP%20User%20Guide.pdf "COPD Assessment Test FAQ") is scored on a scale of 0-40.
+
+```{r}
+summary(COPD[["CAT"]])
+sum(COPD[["CAT"]] > 40)
+```
+
+Since there is just the one, I will exclude it.
+
+```{r}
+COPD[["CAT"]][COPD[["CAT"]] > 40] <- NA_integer_
+```
+

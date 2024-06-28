@@ -119,6 +119,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>COPD <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/COPD_student_dataset.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
+<section id="missing-or-inaccurate-values" class="level2">
+<h2 class="anchored" data-anchor-id="missing-or-inaccurate-values">Missing or inaccurate values</h2>
+<p>Inspecting variables with <code>summary()</code> reveals some unlikely looking ranges.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(COPD[[<span class="st">"HAD"</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.00    6.00   10.00   11.18   15.00   56.20 </code></pre>
+</div>
+</div>
+<p>The HAD score should range from 0 to 21, so there’s a least 1 incorrect value.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(COPD[[<span class="st">"HAD"</span>]] <span class="sc">&gt;</span> <span class="dv">21</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 11</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(COPD[[<span class="st">"HAD"</span>]][COPD[[<span class="st">"HAD"</span>]] <span class="sc">&gt;</span> <span class="dv">21</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  22   23   26   29   30 56.2 
+   3    2    2    1    2    1 </code></pre>
+</div>
+</div>
+<p>In fact there are 11 values over 21. It looks as though the scale for this actually runs from 0 to 30. I’d like to take these questions back to the research team to confirm, but for the sake of this exercise I will just ignore 56.2 as the outlier.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>COPD[[<span class="st">"HAD"</span>]][COPD[[<span class="st">"HAD"</span>]] <span class="sc">&gt;</span> <span class="dv">30</span>] <span class="ot">&lt;-</span> <span class="cn">NA_integer_</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Similarly, CAT has a clearly separated max value. CAT is the COPD assessment test and according to the <a href="https://www.catestonline.org/content/dam/global/catestonline/documents/CAT_HCP%20User%20Guide.pdf" title="COPD Assessment Test FAQ">CAT user guide</a> is scored on a scale of 0-40.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(COPD[[<span class="st">"CAT"</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   3.00   12.00   18.00   19.34   24.00  188.00 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(COPD[[<span class="st">"CAT"</span>]] <span class="sc">&gt;</span> <span class="dv">40</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+</div>
+<p>Since there is just the one, I will exclude it.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>COPD[[<span class="st">"CAT"</span>]][COPD[[<span class="st">"CAT"</span>]] <span class="sc">&gt;</span> <span class="dv">40</span>] <span class="ot">&lt;-</span> <span class="cn">NA_integer_</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
 
 </main>
 <!-- /main column -->
