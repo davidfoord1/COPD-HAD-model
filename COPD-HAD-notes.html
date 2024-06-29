@@ -202,6 +202,9 @@ FVCPRED     -0.004489788  NA  0.5158560  0.6258775  0.62243038  1.000000000</cod
 </div>
 </div>
 </div>
+</section>
+<section id="lung-function" class="level3">
+<h3 class="anchored" data-anchor-id="lung-function">Lung Function</h3>
 <p>There is strong correlation between the lung function measures FEV1, FEV1PRED, FVC and FVCPRED, so I will seek to include only one of the four, by exploring the individual relationships of each to HAD:</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">FEV1</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">FEV1PRED</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">FVC</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false" href="">FVCPRED</a></li></ul>
@@ -354,6 +357,102 @@ F-statistic:  7.52 on 1 and 98 DF,  p-value: 0.007254</code></pre>
 </div>
 <p>They all have seem to be a slight negative predictor of HAD, but none of them explain the variation very well. The FVCPRED model has the highest adjusted R squared value at 0.06179.</p>
 </section>
+<section id="packhistory-and-smoking" class="level3">
+<h3 class="anchored" data-anchor-id="packhistory-and-smoking">PackHistory and smoking</h3>
+<p>PackHistory and smoking are both about a person’s smoking history. smoking is a categorical variable with value 1 for has smoked previously and 2 for currently smokes. PackHistory records a person’s pack years smoking, where pack years is defined as twenty cigarettes smoked every day for one year. For this model I will use the more detailed PackHistory variable.</p>
+</section>
+<section id="comborbidities" class="level3">
+<h3 class="anchored" data-anchor-id="comborbidities">Comborbidities</h3>
+<p>There are several binary variables relating to comorbidity</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>COPD<span class="sc">$</span>comorbid <span class="ot">&lt;-</span> COPD<span class="sc">$</span>Diabetes <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> COPD<span class="sc">$</span>muscular <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  COPD<span class="sc">$</span>hypertension <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> COPD<span class="sc">$</span>AtrialFib <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> COPD<span class="sc">$</span>IHD <span class="sc">==</span> <span class="dv">1</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>COPD<span class="sc">$</span>comorbid <span class="ot">&lt;-</span> <span class="fu">factor</span>(COPD<span class="sc">$</span>comorbid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="disease-measure" class="level2">
+<h2 class="anchored" data-anchor-id="disease-measure">Disease measure</h2>
+<p>CAT and COPDSEVERITY are both measures of COPD disease status. CAT is a continuous score and COPDSEVERITY has three categories of severity. If both variables are suitable I will select the more detailed CAT.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">CAT</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">COPDSEVERITY</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(COPD[[<span class="st">"CAT"</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+   3.00   12.00   18.00   17.65   23.25   32.00       1 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(HAD <span class="sc">~</span> CAT, COPD))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = HAD ~ CAT, data = COPD)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-11.5470  -4.1719  -0.9636   3.5531  15.6532 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  1.69666    1.51963   1.116    0.267    
+CAT          0.51668    0.07896   6.544 2.84e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 6.161 on 97 degrees of freedom
+  (2 observations deleted due to missingness)
+Multiple R-squared:  0.3063,    Adjusted R-squared:  0.2991 
+F-statistic: 42.82 on 1 and 97 DF,  p-value: 2.839e-09</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(COPD[[<span class="st">"COPDSEVERITY"</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+       MILD    MODERATE      SEVERE VERY SEVERE 
+         23          43          27           8 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(HAD <span class="sc">~</span> COPDSEVERITY, COPD))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = HAD ~ COPDSEVERITY, data = COPD)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-11.148  -5.116  -1.148   3.884  18.884 
+
+Coefficients:
+                        Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                8.273      1.524   5.429 4.26e-07 ***
+COPDSEVERITYMODERATE       1.844      1.874   0.984   0.3276    
+COPDSEVERITYSEVERE         3.875      2.053   1.888   0.0621 .  
+COPDSEVERITYVERY SEVERE    7.727      2.951   2.619   0.0103 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 7.147 on 96 degrees of freedom
+  (1 observation deleted due to missingness)
+Multiple R-squared:  0.07984,   Adjusted R-squared:  0.05108 
+F-statistic: 2.777 on 3 and 96 DF,  p-value: 0.04542</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="testing-variables-in-models" class="level2">
+<h2 class="anchored" data-anchor-id="testing-variables-in-models">Testing variables in models</h2>
+<!-- comorbid -->
+<!-- FVCPRED -->
+<!-- AGE -->
+<!-- GENDER -->
+<!-- COPDSEVERITY -->
 </section>
 
 </main>

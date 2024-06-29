@@ -45,7 +45,10 @@ sum(COPD[["HAD"]] > 21)
 table(COPD[["HAD"]][COPD[["HAD"]] > 21])
 ```
 
-In fact there are 11 values over 21. It looks as though the scale for this actually runs from 0 to 30. I'd like to take these questions back to the research team to confirm, but for the sake of this exercise I will just ignore 56.2 as the outlier.
+In fact there are 11 values over 21. It looks as though the scale for this
+actually runs from 0 to 30. I'd like to take these questions back to the
+research team to confirm, but for the sake of this exercise I will just ignore
+56.2 as the outlier.
 
 ```{r}
 COPD[["HAD"]][COPD[["HAD"]] > 30] <- NA_integer_
@@ -85,7 +88,11 @@ cor(COPD[, continuous_vars])
 ```
 :::
 
-There is strong correlation between the lung function measures FEV1, FEV1PRED, FVC and FVCPRED, so I will seek to include only one of the four, by exploring the individual relationships of each to HAD:
+### Lung Function
+
+There is strong correlation between the lung function measures FEV1, FEV1PRED,
+FVC and FVCPRED, so I will seek to include only one of the four, by exploring
+the individual relationships of each to HAD:
 
 ::: {.panel-tabset}
 ## FEV1
@@ -124,4 +131,64 @@ abline(FVCPRED_model)
 ```
 :::
 
-They all have seem to be a slight negative predictor of HAD, but none of them explain the variation very well. The FVCPRED model has the highest adjusted R squared value at 0.06179.
+They all have seem to be a slight negative predictor of HAD, but none of them
+explain the variation very well. The FVCPRED model has the highest adjusted R
+squared value at 0.06179.
+
+### PackHistory and smoking
+
+PackHistory and smoking are both about a person's smoking history. smoking is a
+categorical variable with value 1 for has smoked previously and 2 for currently
+smokes. PackHistory records a person’s pack years smoking, where pack years is
+defined as twenty cigarettes smoked every day for one year. For this model I
+will use the more detailed PackHistory variable.
+
+### Comborbidities
+
+There are several binary variables relating to comorbidity
+
+```{r}
+COPD$comorbid <- COPD$Diabetes == 1 | COPD$muscular == 1 | 
+  COPD$hypertension == 1 | COPD$AtrialFib == 1 | COPD$IHD == 1
+
+COPD$comorbid <- factor(COPD$comorbid)
+```
+
+## Disease measure 
+
+CAT and COPDSEVERITY are both measures of COPD disease status. CAT is a
+continuous score and COPDSEVERITY has three categories of severity. If both
+variables are suitable I will select the more detailed CAT.
+
+::: {.panel-tabset}
+## CAT
+```{r}
+summary(COPD[["CAT"]])
+summary(lm(HAD ~ CAT, COPD))
+```
+## COPDSEVERITY
+
+```{r}
+table(COPD[["COPDSEVERITY"]])
+summary(lm(HAD ~ COPDSEVERITY, COPD))
+```
+
+:::
+
+## Trying out the variables as predictors
+
+That leaves us with the following candidate predictor variables to explore
+
+- AGE
+- GENDER
+- CAT
+- FVCPRED
+- comorbid
+
+First I want to explore the relationship of each variable indivually with the
+outcome HAD.
+
+```{r}
+
+```
+
