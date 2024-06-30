@@ -140,8 +140,43 @@ squared value at 0.06179.
 PackHistory and smoking are both about a person's smoking history. smoking is a
 categorical variable with value 1 for has smoked previously and 2 for currently
 smokes. PackHistory records a person’s pack years smoking, where pack years is
-defined as twenty cigarettes smoked every day for one year. For this model I
-will use the more detailed PackHistory variable.
+defined as twenty cigarettes smoked every day for one year. 
+
+```{r}
+table(COPD[["smoking"]])
+
+cor(COPD[["smoking"]], COPD[["PackHistory"]], method = "spearman")
+```
+
+They don't appear to be highly correlated, but I still don't think I want to
+include both. "smoking" is probably not that helpful given there are such a
+small number aren't current smokers. I still want a bit more of a comparison
+though.
+
+```{r}
+boxplot(COPD[["smoking"]], COPD[["PackHistory"]],
+        xlab = "Smoking status",
+        ylab = "Years of daily pack smoking")
+```
+
+Well, this has raised some concerns to me about PackHistory. If the unit is
+years the the number with 80+ looks suprising.
+
+```{r}
+sum(COPD[["PackHistory"]] > 80)
+```
+
+Ok, it's only 6 which is not too bad, but since there is an AGE column I want to check how possible this is. 
+
+```{r}
+sum(COPD[["PackHistory"]] > COPD[["AGE"]])
+```
+
+This feels a bit problematic. I'm not sure if the description I have about the
+measure is incorrect, or if it's the data, but as this is >10% of the dataset
+that looks impossible I think I'm going to have to ignore the this as a
+potential predictor. That's also without adjusting for some assumption of a
+reasonable age people might start smoking.
 
 ### Comborbidities
 

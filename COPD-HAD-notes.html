@@ -359,16 +359,56 @@ F-statistic:  7.52 on 1 and 98 DF,  p-value: 0.007254</code></pre>
 </section>
 <section id="packhistory-and-smoking" class="level3">
 <h3 class="anchored" data-anchor-id="packhistory-and-smoking">PackHistory and smoking</h3>
-<p>PackHistory and smoking are both about a person’s smoking history. smoking is a categorical variable with value 1 for has smoked previously and 2 for currently smokes. PackHistory records a person’s pack years smoking, where pack years is defined as twenty cigarettes smoked every day for one year. For this model I will use the more detailed PackHistory variable.</p>
+<p>PackHistory and smoking are both about a person’s smoking history. smoking is a categorical variable with value 1 for has smoked previously and 2 for currently smokes. PackHistory records a person’s pack years smoking, where pack years is defined as twenty cigarettes smoked every day for one year.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(COPD[[<span class="st">"smoking"</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ 1  2 
+16 85 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(COPD[[<span class="st">"smoking"</span>]], COPD[[<span class="st">"PackHistory"</span>]], <span class="at">method =</span> <span class="st">"spearman"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.02234481</code></pre>
+</div>
+</div>
+<p>They don’t appear to be highly correlated, but I still don’t think I want to include both. “smoking” is probably not that helpful given there are such a small number aren’t current smokers. I still want a bit more of a comparison though.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(COPD[[<span class="st">"smoking"</span>]], COPD[[<span class="st">"PackHistory"</span>]],</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">"Smoking status"</span>,</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">"Years of daily pack smoking"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="COPD-HAD-notes_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Well, this has raised some concerns to me about PackHistory. If the unit is years the the number with 80+ looks suprising.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(COPD[[<span class="st">"PackHistory"</span>]] <span class="sc">&gt;</span> <span class="dv">80</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 6</code></pre>
+</div>
+</div>
+<p>Ok, it’s only 6 which is not too bad, but since there is an AGE column I want to check how possible this is.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(COPD[[<span class="st">"PackHistory"</span>]] <span class="sc">&gt;</span> COPD[[<span class="st">"AGE"</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 14</code></pre>
+</div>
+</div>
+<p>This feels a bit problematic. I’m not sure if the description I have about the measure is incorrect, or if it’s the data, but as this is &gt;10% of the dataset that looks impossible I think I’m going to have to ignore the this as a potential predictor. That’s also without adjusting for some assumption of a reasonable age people might start smoking.</p>
 </section>
 <section id="comborbidities" class="level3">
 <h3 class="anchored" data-anchor-id="comborbidities">Comborbidities</h3>
 <p>There are several binary variables relating to comorbidity</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>COPD<span class="sc">$</span>comorbid <span class="ot">&lt;-</span> COPD<span class="sc">$</span>Diabetes <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> COPD<span class="sc">$</span>muscular <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> </span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  COPD<span class="sc">$</span>hypertension <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> COPD<span class="sc">$</span>AtrialFib <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> COPD<span class="sc">$</span>IHD <span class="sc">==</span> <span class="dv">1</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>COPD<span class="sc">$</span>comorbid <span class="ot">&lt;-</span> <span class="fu">factor</span>(COPD<span class="sc">$</span>comorbid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>COPD<span class="sc">$</span>comorbid <span class="ot">&lt;-</span> COPD<span class="sc">$</span>Diabetes <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> COPD<span class="sc">$</span>muscular <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> </span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  COPD<span class="sc">$</span>hypertension <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> COPD<span class="sc">$</span>AtrialFib <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> COPD<span class="sc">$</span>IHD <span class="sc">==</span> <span class="dv">1</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>COPD<span class="sc">$</span>comorbid <span class="ot">&lt;-</span> <span class="fu">factor</span>(COPD<span class="sc">$</span>comorbid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
@@ -380,12 +420,12 @@ F-statistic:  7.52 on 1 and 98 DF,  p-value: 0.007254</code></pre>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(COPD[[<span class="st">"CAT"</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(COPD[[<span class="st">"CAT"</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
    3.00   12.00   18.00   17.65   23.25   32.00       1 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(HAD <span class="sc">~</span> CAT, COPD))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(HAD <span class="sc">~</span> CAT, COPD))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -411,13 +451,13 @@ F-statistic: 42.82 on 1 and 97 DF,  p-value: 2.839e-09</code></pre>
 </div>
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(COPD[[<span class="st">"COPDSEVERITY"</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(COPD[[<span class="st">"COPDSEVERITY"</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
        MILD    MODERATE      SEVERE VERY SEVERE 
          23          43          27           8 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(HAD <span class="sc">~</span> COPDSEVERITY, COPD))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(HAD <span class="sc">~</span> COPDSEVERITY, COPD))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -446,13 +486,17 @@ F-statistic: 2.777 on 3 and 96 DF,  p-value: 0.04542</code></pre>
 </div>
 </div>
 </section>
-<section id="testing-variables-in-models" class="level2">
-<h2 class="anchored" data-anchor-id="testing-variables-in-models">Testing variables in models</h2>
-<!-- comorbid -->
-<!-- FVCPRED -->
-<!-- AGE -->
-<!-- GENDER -->
-<!-- COPDSEVERITY -->
+<section id="trying-out-the-variables-as-predictors" class="level2">
+<h2 class="anchored" data-anchor-id="trying-out-the-variables-as-predictors">Trying out the variables as predictors</h2>
+<p>That leaves us with the following candidate predictor variables to explore</p>
+<ul>
+<li>AGE</li>
+<li>GENDER</li>
+<li>CAT</li>
+<li>FVCPRED</li>
+<li>comorbid</li>
+</ul>
+<p>First I want to explore the relationship of each variable indivually with the outcome HAD.</p>
 </section>
 
 </main>
