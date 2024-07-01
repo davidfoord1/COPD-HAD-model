@@ -491,12 +491,154 @@ F-statistic: 2.777 on 3 and 96 DF,  p-value: 0.04542</code></pre>
 <p>That leaves us with the following candidate predictor variables to explore</p>
 <ul>
 <li>AGE</li>
-<li>GENDER</li>
+<li>gender</li>
 <li>CAT</li>
 <li>FVCPRED</li>
 <li>comorbid</li>
 </ul>
-<p>First I want to explore the relationship of each variable indivually with the outcome HAD.</p>
+<p>It is known that age and gender impact depression. One might expect people with a worse disease condition i.e.&nbsp;higher CAT score to also have a worse HAD score. First I want to explore the relationship of each variable individually with the outcome HAD.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>age_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(HAD <span class="sc">~</span> AGE, COPD)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(age_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = HAD ~ AGE, data = COPD)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-12.554  -4.407  -1.103   3.659  20.081 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 25.50974    6.43149   3.966 0.000139 ***
+AGE         -0.21069    0.09111  -2.312 0.022843 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 7.181 on 98 degrees of freedom
+  (1 observation deleted due to missingness)
+Multiple R-squared:  0.05174,   Adjusted R-squared:  0.04207 
+F-statistic: 5.348 on 1 and 98 DF,  p-value: 0.02284</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(age_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 2.5 %      97.5 %
+(Intercept) 12.7466586 38.27282554
+AGE         -0.3914899 -0.02988553</code></pre>
+</div>
+</div>
+<p>The model suggests that for every 1 year of age, HAD score decreases by 0.21. So there does appear to be some relationship, but it doesn’t explain the variation in HAD very well.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(HAD <span class="sc">~</span> AGE, COPD)</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(age_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="COPD-HAD-notes_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>gender_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(HAD <span class="sc">~</span> gender, COPD)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(gender_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = HAD ~ gender, data = COPD)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-12.000  -4.046  -1.023   4.954  18.000 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   12.000      1.236   9.706 5.26e-16 ***
+gender        -1.954      1.533  -1.274    0.206    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 7.314 on 98 degrees of freedom
+  (1 observation deleted due to missingness)
+Multiple R-squared:  0.0163,    Adjusted R-squared:  0.006257 
+F-statistic: 1.623 on 1 and 98 DF,  p-value: 0.2056</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(gender_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                2.5 %    97.5 %
+(Intercept)  9.546528 14.453472
+gender      -4.997004  1.089311</code></pre>
+</div>
+</div>
+<p>The p-value of 0.2 means we cannot rule out the null hypothesis of gender having no relationship to HAD score, and indeed the 95% confidence interval includes a gradient of 0. I will continue to explore this with gender alongside other variables.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(HAD <span class="sc">~</span> gender, COPD)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="COPD-HAD-notes_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can see the HAD score distribution is fairly similar in men and women.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>cat_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(HAD <span class="sc">~</span> CAT, COPD)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(gender_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = HAD ~ gender, data = COPD)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-12.000  -4.046  -1.023   4.954  18.000 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   12.000      1.236   9.706 5.26e-16 ***
+gender        -1.954      1.533  -1.274    0.206    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 7.314 on 98 degrees of freedom
+  (1 observation deleted due to missingness)
+Multiple R-squared:  0.0163,    Adjusted R-squared:  0.006257 
+F-statistic: 1.623 on 1 and 98 DF,  p-value: 0.2056</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(cat_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 2.5 %    97.5 %
+(Intercept) -1.3193823 4.7127094
+CAT          0.3599729 0.6733953</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>comorbid_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(HAD <span class="sc">~</span> comorbid, COPD)</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(comorbid_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = HAD ~ comorbid, data = COPD)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-10.7593  -5.5811  -0.7593   4.6689  20.4783 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)     9.522      1.075   8.861 3.58e-14 ***
+comorbidTRUE    2.238      1.462   1.530    0.129    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 7.288 on 98 degrees of freedom
+  (1 observation deleted due to missingness)
+Multiple R-squared:  0.02333,   Adjusted R-squared:  0.01337 
+F-statistic: 2.341 on 1 and 98 DF,  p-value: 0.1292</code></pre>
+</div>
+</div>
 </section>
 
 </main>

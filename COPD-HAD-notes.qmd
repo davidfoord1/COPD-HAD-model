@@ -215,15 +215,58 @@ summary(lm(HAD ~ COPDSEVERITY, COPD))
 That leaves us with the following candidate predictor variables to explore
 
 - AGE
-- GENDER
+- gender
 - CAT
 - FVCPRED
 - comorbid
 
-First I want to explore the relationship of each variable indivually with the
+It is known that age and gender impact depression. One might expect people with
+a worse disease condition i.e. higher CAT score to also have a worse HAD score.
+First I want to explore the relationship of each variable individually with the
 outcome HAD.
 
 ```{r}
-
+age_lm <- lm(HAD ~ AGE, COPD)
+summary(age_lm)
+confint(age_lm)
 ```
 
+The model suggests that for every 1 year of age, HAD score decreases by 0.21. 
+So there does appear to be some relationship, but it doesn't explain the 
+variation in HAD very well.
+
+```{r}
+plot(HAD ~ AGE, COPD)
+abline(age_lm)
+```
+
+
+```{r}
+gender_lm <- lm(HAD ~ gender, COPD)
+summary(gender_lm)
+confint(gender_lm)
+```
+
+The p-value of 0.2 means we cannot rule out the null hypothesis of gender
+having no relationship to HAD score, and indeed the 95% confidence interval
+includes a gradient of 0. I will continue to explore this with gender alongside
+other variables.
+
+
+```{r}
+boxplot(HAD ~ gender, COPD)
+```
+
+We can see the HAD score distribution is fairly similar in men and women.
+
+```{r}
+cat_lm <- lm(HAD ~ CAT, COPD)
+summary(gender_lm)
+confint(cat_lm)
+```
+
+
+```{r}
+comorbid_lm <- lm(HAD ~ comorbid, COPD)
+summary(comorbid_lm)
+```
