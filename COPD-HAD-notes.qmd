@@ -95,7 +95,7 @@ FVC and FVCPRED, so I will seek to include only one of the four, by exploring
 the individual relationships of each to HAD:
 
 ::: {.panel-tabset}
-## FEV1
+### FEV1
 
 ```{r}
 FEV1_model <- lm(HAD ~ FEV1, COPD)
@@ -103,7 +103,7 @@ summary(FEV1_model)
 plot(HAD ~ FEV1, COPD)
 abline(FEV1_model)
 ```
-## FEV1PRED
+### FEV1PRED
 
 ```{r}
 FEV1PRED_model <- lm(HAD ~ FEV1PRED, COPD)
@@ -112,7 +112,7 @@ plot(HAD ~ FEV1PRED, COPD)
 abline(FEV1PRED_model)
 ```
 
-## FVC
+### FVC
 
 ```{r}
 FVC_model <- lm(HAD ~ FVC, COPD)
@@ -121,7 +121,7 @@ plot(HAD ~ FVC, COPD)
 abline(FVC_model)
 ```
 
-## FVCPRED
+### FVCPRED
 
 ```{r}
 FVCPRED_model <- lm(HAD ~ FVCPRED, COPD)
@@ -225,6 +225,8 @@ a worse disease condition i.e. higher CAT score to also have a worse HAD score.
 First I want to explore the relationship of each variable individually with the
 outcome HAD.
 
+### Characteristics
+
 ```{r}
 age_lm <- lm(HAD ~ AGE, COPD)
 summary(age_lm)
@@ -257,16 +259,86 @@ other variables.
 boxplot(HAD ~ gender, COPD)
 ```
 
-We can see the HAD score distribution is fairly similar in men and women.
+We can see the HAD score distribution is fairly similar in men and women. I do want to check out age and gender alongside each other.
+
+```{r}
+age_gender_lm <- lm(HAD ~ AGE + gender, COPD)
+summary(age_gender_lm)
+```
+
+Do they have an impact through intersection?
+
+```{r}
+age_gender_lm <- lm(HAD ~ AGE * gender, COPD)
+summary(age_gender_lm)
+```
+
+It doesn't appear to be the case and seems like it might be more valuable to
+include AGE without gender.
+
+### Disease
 
 ```{r}
 cat_lm <- lm(HAD ~ CAT, COPD)
-summary(gender_lm)
+summary(cat_lm)
 confint(cat_lm)
 ```
 
+As a measure of disease I would expect CAT score to predict increased HAD score.
+Indeed, CAT looks like it's going to be valuable to include, there is a clear
+positive relationship with HAD. That there is no relationship can be ruled out
+even at significance levels below 0.001.
+
+```{r}
+plot(HAD ~ CAT, COPD)
+abline(cat_lm, col = "blue")
+```
+
+### Comborbidities
 
 ```{r}
 comorbid_lm <- lm(HAD ~ comorbid, COPD)
 summary(comorbid_lm)
+confint(comorbid_lm)
 ```
+
+No clear indication, but I want to check out if comorbodity interacts with
+disease/condition.
+
+```{r}
+cat_comorbid_lm <- lm(HAD ~ CAT + comorbid + CAT * comorbid, COPD)
+summary(cat_comorbid_lm)
+```
+
+The relationship looks weaker, but I will note that the adjusted R squared is slightly higher than that of $CAT$ on it's own, so it may better explain the variance, but p-values for both $comorbid$ and $CAT * comorbid$ are very high, making their null hypotheses significantly likely.
+
+## Selecting multiple variabels
+
+more multiple combinations to make my final variable selection.I'm confident I
+want to include CAT, but want to try out some
+
+```{r}
+multi_lm1 <- lm(HAD ~ CAT + FVCPRED + AGE + gender + comorbid, COPD)
+summary(multi_lm1)
+confint(multi_lm1)
+```
+
+This does bring the adjusted R-squared higher, but as with 
+CAT and comorbid, FVCPRED, comorbid and gender have high p-values. 
+
+I'm not sure how best to interpret all of that together, but it
+does make me think it may be best to try just CAT and AGE.
+
+```{r}
+cat_age_lm <- lm(HAD ~ CAT + AGE, COPD)
+summary(cat_age_lm)
+confint(cat_age_lm)
+```
+
+My feeling is this is the best model of the ones I've tried. Both CAT and AGE seem to have explanatory power over their 
+respective null hypotheses. The adjusted R-squared value is higher than most of the other models I've tried at $0.33$, but that's still quite low if the potential max is 1, and so suggests not giving a great explanation of the variation.
+
+I feel like I'm missing something, but I think this is my best 
+first shot:
+
+$HAD = 13.93 + 0.50 * \text{CAT} - 0.17 * AGE$
