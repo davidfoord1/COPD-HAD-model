@@ -1,0 +1,41 @@
+# What are the patient characteristics that predict worsening depression/anxiety in COPD patients? 
+
+David Foord
+
+### Background
+Chronic Obstructive Pulmonary Disease (COPD) is an inflammatory lung disease
+that obstructs airflow from the lungs. It is known that COPD patients often
+experience mental health including anxiety and depression. Hospital 
+Anxiety and Depression (HAD) score is a common measure used to assess the
+level of symptoms. This study aims to identify predictors of HAD score among 
+COPD patients.
+
+### Methods
+
+This study used a dataset of 101 COPD patients. Linear regression was used to
+assess the relationship between several candidate predictor variables and HAD 
+and HAD score.
+
+### Results
+
+The final model identified two significant predictors of the HAD score: the COPD
+Assessment Test (CAT) score and age. The regression equation was HAD = 13.93 +
+0.50 * CAT - 0.17 * AGE. This indicates that higher CAT scores, reflecting
+greater disease severity, were associated with higher HAD scores. Conversely,
+older age was associated with lower HAD scores, suggesting better psychological
+outcomes. The final model equation was:
+
+$HAD = 13.93 + 0.50 * CAT - 0.17 * AGE$
+
+### Discussion
+
+Background: what is known and why is this study needed? 
+
+Methods: what did you do? 
+
+Results: what did you find? 
+
+Discussion: what does it mean? 
+ 
+ 
+ 
