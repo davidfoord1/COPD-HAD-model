@@ -341,4 +341,4 @@ respective null hypotheses. The adjusted R-squared value is higher than most of 
 I feel like I'm missing something, but I think this is my best 
 first shot:
 
-$HAD = 13.93 + 0.50 * \text{CAT} - 0.17 * AGE$
+$HAD = 13.93 + 0.50 * CAT - 0.17 * AGE$
