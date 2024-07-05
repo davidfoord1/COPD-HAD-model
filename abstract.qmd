@@ -2,40 +2,43 @@
 
 David Foord
 
-### Background
+#### Background
 Chronic Obstructive Pulmonary Disease (COPD) is an inflammatory lung disease
 that obstructs airflow from the lungs. It is known that COPD patients often
-experience mental health including anxiety and depression. Hospital 
-Anxiety and Depression (HAD) score is a common measure used to assess the
-level of symptoms. This study aims to identify predictors of HAD score among 
-COPD patients.
+experience mental health issues including anxiety and depression. Hospital
+Anxiety and Depression (HAD) score is a common measure used to assess the level
+of symptoms. This study aims to identify predictors of HAD score among COPD
+patients.
 
-### Methods
+#### Methods
 
-This study used a dataset of 101 COPD patients. Linear regression was used to
-assess the relationship between several candidate predictor variables and HAD 
-and HAD score.
+This study used a dataset of 101 COPD patients (aged 44-88, 65 female). Linear regression was used to
+assess the relationship between several candidate predictor variables  
+and HAD score. 
+Variables were excluded where chance couldn't be rejected at significance level 0.05.
+Predictors were selected primarily for improving the
+adjusted R-squared value with smaller 95% confidence interval ranges. 
+Initially variables were rejected for having more than 10% of values as invalid. 
+Variables were selected from groups with high collinearity based 
 
-### Results
+#### Results
 
-The final model identified two significant predictors of the HAD score: the COPD
-Assessment Test (CAT) score and age. The regression equation was HAD = 13.93 +
-0.50 * CAT - 0.17 * AGE. This indicates that higher CAT scores, reflecting
-greater disease severity, were associated with higher HAD scores. Conversely,
-older age was associated with lower HAD scores, suggesting better psychological
-outcomes. The final model equation was:
+The final model identified two significant predictors of HAD score: the COPD
+Assessment Test (CAT) score and age. The CAT score, which is a measure of
+disease severity, had a coefficient of 0.50 (95% CI 0.35-0.66; p < 0.001),
+positively predicting higher HAD scores. Age had a coefficient of -0.17 (95% CI
+-0.33, -0.02; p = 0.029), indicating that a negative association with HAD score.
+The adjusted R-squared value of the model was 0.3263, suggesting that
+approximately 32.63% of the variance in HAD scores is explained by these
+predictors.
 
-$HAD = 13.93 + 0.50 * CAT - 0.17 * AGE$
+#### Discussion
 
-### Discussion
-
-Background: what is known and why is this study needed? 
-
-Methods: what did you do? 
-
-Results: what did you find? 
-
-Discussion: what does it mean? 
- 
- 
- 
+The findings suggest that disease severity, as measured by the CAT score, is a
+significant predictor of worse mental health outcomes. This highlights a need
+for comprehensive health care that addresses by the physical and mental health
+impact of COPD. The negative association between age and HAD score may indicate
+that older patients have developed better coping mechanisms or have otherwise
+benefited from better medical management. Further research is need to explore
+these relationships and develop targeted interventions to
+improve the psychological well-being of COPD patients.
