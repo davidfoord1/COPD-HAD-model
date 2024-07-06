@@ -1,0 +1,17 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: Linear Regression in R for public health
+  navbar:
+    left:
+      - href: index.qmd
+        text: Abstract
+      - notes.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
