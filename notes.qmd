@@ -1,7 +1,7 @@
 ---
-title: "model-notes"
+title: "Notes"
 format: html
-editor: source
+toc: true
 ---
 
 ## What are the patient characteristics that predict worsening depression/anxiety in COPD patients? 
@@ -178,7 +178,7 @@ that looks impossible I think I'm going to have to ignore the this as a
 potential predictor. That's also without adjusting for some assumption of a
 reasonable age people might start smoking.
 
-### Comborbidities
+### Comorbidities
 
 There are several binary variables relating to comorbidity
 
@@ -294,7 +294,7 @@ plot(HAD ~ CAT, COPD)
 abline(cat_lm, col = "blue")
 ```
 
-### Comborbidities
+### Comorbidities
 
 ```{r}
 comorbid_lm <- lm(HAD ~ comorbid, COPD)
